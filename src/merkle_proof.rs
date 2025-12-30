@@ -237,7 +237,7 @@ impl MerkleProof {
     ) -> Result<bool>
     where
         K: Key<N>,
-        V: Value
+        V: Value,
     {
         let calculated_root = self.compute_root::<H, K, V, N>(leaves)?;
         Ok(&calculated_root == root)

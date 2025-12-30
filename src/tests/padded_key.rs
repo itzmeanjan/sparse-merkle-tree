@@ -2,7 +2,7 @@
 //! application specific keys to internal keys.
 
 use crate::H256;
-use crate::{Key, InternalKey};
+use crate::{InternalKey, Key};
 #[cfg(feature = "borsh")]
 use borsh::{BorshDeserialize, BorshSerialize};
 use core::convert::TryFrom;

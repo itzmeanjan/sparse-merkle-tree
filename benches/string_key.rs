@@ -1,8 +1,8 @@
 use std::ops::Deref;
 
+use nam_sparse_merkle_tree::{InternalKey, Key};
 use rand::Rng;
 use random_string::generate;
-use nam_sparse_merkle_tree::{InternalKey, Key};
 
 pub const IBC_KEY_LIMIT: usize = 300;
 pub const ICS_IDENTIFIER_CHARSET: &str = "1234567890abcdefghijklmnopqrstuvwxyz._+-#[]<>";
@@ -39,9 +39,7 @@ impl Key<IBC_KEY_LIMIT> for StringKey {
         let mut length = 0;
         for (i, byte) in bytes.iter().enumerate() {
             if i >= IBC_KEY_LIMIT {
-                return Err(
-                    "Input IBC key is too large".into(),
-                );
+                return Err("Input IBC key is too large".into());
             }
             original[i] = *byte;
             tree_key[i] = byte.wrapping_add(1);
@@ -59,7 +57,7 @@ enum Identifier {
     Port,
     Client,
     Connection,
-    Channel
+    Channel,
 }
 
 /// Generate a random identifier complying with ICS
@@ -76,15 +74,27 @@ fn random_identifier(id: Identifier, rng: &mut impl Rng) -> String {
 /// Generate a random path in storage specified by ICS
 fn random_ics_path(rng: &mut impl Rng) -> String {
     match rng.gen_range(0..13u8) {
-        0 => format!("clients/{}/clientType", random_identifier(Identifier::Client, rng)),
-        1 => format!("clients/{}/clientState", random_identifier(Identifier::Client, rng)),
+        0 => format!(
+            "clients/{}/clientType",
+            random_identifier(Identifier::Client, rng)
+        ),
+        1 => format!(
+            "clients/{}/clientState",
+            random_identifier(Identifier::Client, rng)
+        ),
         2 => format!(
             "clients/{}/consensusStates/{}",
             random_identifier(Identifier::Client, rng),
             rng.gen_range(1..=128u8)
         ),
-        3 => format!("clients/{}/connections", random_identifier(Identifier::Client, rng)),
-        4 => format!("connections/{}", random_identifier(Identifier::Connection, rng)),
+        3 => format!(
+            "clients/{}/connections",
+            random_identifier(Identifier::Client, rng)
+        ),
+        4 => format!(
+            "connections/{}",
+            random_identifier(Identifier::Connection, rng)
+        ),
         5 => format!("ports/{}", random_identifier(Identifier::Port, rng)),
         6 => format!(
             "channelEnds/ports/{}/channels/{}",
@@ -128,7 +138,7 @@ fn random_ics_path(rng: &mut impl Rng) -> String {
     }
 }
 
-pub fn random_stringkey(rng: &mut impl Rng) -> StringKey  {
+pub fn random_stringkey(rng: &mut impl Rng) -> StringKey {
     let bytes = random_ics_path(rng).into_bytes();
     StringKey::try_from_bytes(bytes.as_slice()).expect("Should not fail")
 }
