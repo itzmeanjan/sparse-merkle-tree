@@ -2,13 +2,14 @@ mod padded_key;
 
 use super::*;
 use crate::{
-    MerkleProof, SparseMerkleTree, blake2b::Blake2bHasher, default_store::DefaultStore,
-    error::Error, sha256::Sha256Hasher,
+    MerkleProof, SparseMerkleTree, default_store::DefaultStore, error::Error,
+    internal_blake2b::Blake2bHasher, sha256::Sha256Hasher, traits::Hasher,
 };
 use core::convert::{TryFrom, TryInto};
 use padded_key::PaddedKey;
 use proptest::prelude::*;
 use rand::prelude::{Rng, SliceRandom};
+use sha2::digest::{Update, VariableOutput};
 
 type Smt<const N: usize> =
     SparseMerkleTree<Blake2bHasher, PaddedKey<N>, H256, DefaultStore<PaddedKey<N>, H256, N>, N>;
@@ -94,30 +95,23 @@ fn test_default_merkle_proof() {
 
 #[test]
 fn test_validate() {
-    fn new_blake2b() -> blake2b_rs::Blake2b {
-        blake2b_rs::Blake2bBuilder::new(32).personal(b"Smt").build()
-    }
     let mut tree = Smt::<1>::default();
     for key_byte in [[0u8], [1], [4], [7], [8]] {
         let key: PaddedKey<1> = key_byte.into();
         let value: H256 = {
-            let mut buf = [0u8; 32];
-            let mut hasher = new_blake2b();
-            hasher.update(&key_byte);
-            hasher.finalize(&mut buf);
-            buf.into()
+            let mut hasher = internal_blake2b::Blake2bHasher::default();
+            hasher.write_bytes(&key_byte);
+            hasher.finish()
         };
+
         tree.update(key, value).expect("Test failed");
     }
+
     assert!(tree.validate());
 }
 
 #[test]
 fn test_merkle_root() {
-    fn new_blake2b() -> blake2b_rs::Blake2b {
-        blake2b_rs::Blake2bBuilder::new(32).personal(b"Smt").build()
-    }
-
     let mut tree = Smt::<42>::default();
     for (i, word) in "The quick brown fox jumps over the lazy dog"
         .split_whitespace()
@@ -125,24 +119,28 @@ fn test_merkle_root() {
     {
         let key: PaddedKey<42> = {
             let mut buf = [0u8; 42];
-            let mut hasher = new_blake2b();
+
+            let mut hasher = blake2::Blake2bVar::new(buf.len())
+                .expect("must be able to create new blake2b hasher instance");
             hasher.update(&(i as u32).to_le_bytes());
-            hasher.finalize(&mut buf);
+            hasher
+                .finalize_variable(&mut buf)
+                .expect("must be able to finalize blake2b hasher instance");
+
             buf.into()
         };
         let value: H256 = {
-            let mut buf = [0u8; 32];
-            let mut hasher = new_blake2b();
-            hasher.update(word.as_bytes());
-            hasher.finalize(&mut buf);
-            buf.into()
+            let mut hasher = internal_blake2b::Blake2bHasher::default();
+            hasher.write_bytes(word.as_bytes());
+            hasher.finish()
         };
+
         tree.update(key, value).expect("update");
     }
 
     let expected_root: H256 = [
-        53, 6, 166, 103, 176, 25, 32, 25, 11, 238, 105, 12, 97, 160, 103, 70, 170, 35, 89, 138, 68,
-        83, 84, 45, 133, 246, 181, 201, 166, 57, 150, 17,
+        97, 117, 223, 198, 55, 131, 159, 62, 156, 63, 163, 61, 233, 10, 116, 54, 92, 202, 128, 103,
+        33, 126, 76, 91, 46, 229, 239, 96, 194, 180, 1, 71,
     ]
     .into();
     assert_eq!(tree.store().leaves_map().len(), 9);

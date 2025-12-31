@@ -4,11 +4,11 @@
 //!
 //! ```
 //! use nam_sparse_merkle_tree::{
-//!     blake2b::Blake2bHasher, default_store::DefaultStore,
+//!     internal_blake2b::Blake2bHasher, default_store::DefaultStore,
 //!     error::Error, MerkleProof,
 //!     SparseMerkleTree, traits::Value, H256, Hash,
+//!     traits::Hasher,
 //! };
-//! use blake2b_rs::{Blake2b, Blake2bBuilder};
 //!
 //! // define SMT
 //! type SMT = SparseMerkleTree<Blake2bHasher, Hash, Word, DefaultStore<Hash, Word, 32>, 32>;
@@ -25,11 +25,6 @@
 //!    }
 //! }
 //!
-//! // helper function
-//! fn new_blake2b() -> Blake2b {
-//!     Blake2bBuilder::new(32).personal(b"SMT").build()
-//! }
-//!
 //! fn construct_smt() {
 //!     let mut tree = SMT::default();  
 //!     for (i, word) in "The quick brown fox jumps over the lazy dog"
@@ -37,20 +32,17 @@
 //!         .enumerate()
 //!     {
 //!         let key: Hash = {
-//!             let mut buf = [0u8; 32];
-//!             let mut hasher = new_blake2b();
-//!             hasher.update(&(i as u32).to_le_bytes());
-//!             hasher.finalize(&mut buf);
-//!             buf.into()
+//!             let mut hasher = Blake2bHasher::default();
+//!             hasher.write_bytes(&(i as u32).to_le_bytes());
+//!             hasher.finish().into()
 //!         };
-//!         let hash: H256 = {
-//!             let mut buf = [0u8; 32];
-//!             if !word.is_empty() {
-//!                 let mut hasher = new_blake2b();
-//!                 hasher.update(word.as_bytes());
-//!                 hasher.finalize(&mut buf);
-//!             }
-//!             buf.into()
+//!
+//!         let hash: H256 = if !word.is_empty() {
+//!             let mut hasher = Blake2bHasher::default();
+//!             hasher.write_bytes(word.as_bytes());
+//!             hasher.finish().into()
+//!         } else {
+//!             H256::zero()
 //!         };
 //!         let value = Word(word.to_string(), hash);
 //!         // insert key value into tree
@@ -63,11 +55,11 @@
 
 #![cfg_attr(not(feature = "std"), no_std)]
 
-#[cfg(feature = "blake2b")]
-pub mod blake2b;
 pub mod default_store;
 pub mod error;
 pub mod h256;
+#[cfg(feature = "blake2b")]
+pub mod internal_blake2b;
 pub mod internal_key;
 pub mod merge;
 pub mod merkle_proof;

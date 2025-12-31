@@ -9,12 +9,13 @@ repository = "https://github.com/itzmeanjan/sparse-merkle-tree"
 version = "0.1.0"
 
 [features]
-blake2b = ["blake2b-rs"]
 default = ["std", "blake2b", "borsh"]
 std = []
+blake2b = ["dep:blake2"]
+borsh = ["dep:borsh"]
 
 [dependencies]
-blake2b-rs = { version = "0.2.0", optional = true }
+blake2 = { version = "=0.10.6", optional = true }
 borsh = { version = "1.2.0", optional = true, features = [
     "unstable__schema",
     "derive",
