@@ -458,7 +458,7 @@ proptest! {
 #[test]
 fn test_v0_2_broken_sample() {
     fn parse_h256(s: &str) -> H256 {
-        let data = hex::decode(s).unwrap();
+        let data = const_hex::decode(s).unwrap();
         let mut inner = [0u8; 32];
         inner.copy_from_slice(&data);
         H256::from(inner)
