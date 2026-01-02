@@ -1,12 +1,22 @@
 [package]
 name = "fast-sparse-merkle-tree"
-authors = ["Anjan Roy <hello@itzmeanjan.in>"]
-description = "Fast Sparse Merkle Tree (SMT) library in Rust, using TurboSHAKE128 as default hash function"
+version = "0.1.0"
 edition = "2024"
 resolver = "3"
-license = "MIT"
+rust-version = "1.84.0"
+authors = ["Anjan Roy <hello@itzmeanjan.in>"]
+description = "Fast Sparse Merkle Tree (SMT) library in Rust, using TurboSHAKE128 as default hash function"
+readme = "README.md"
 repository = "https://github.com/itzmeanjan/fast-sparse-merkle-tree"
-version = "0.1.0"
+license = "MIT"
+keywords = ["sparse-merkle-tree", "smt", "turboshake", "zero-knowledge", "zkVM"]
+categories = [
+    "data-structures",
+    "cryptography",
+    "algorithms",
+    "no-std",
+    "database",
+]
 
 [features]
 default = ["std", "turboshake", "blake3", "borsh"]
