@@ -1,4 +1,9 @@
+//! # Fast SMT (Sparse Merkle Tree)
+//!
 //! Constructs a new `SparseMerkleTree<H, V, S>`, using TurboSHAKE128 as default hash function.
+//! You always have the freedom of using your favourite hash function by implementing `Hasher` trait.
+//! We provide two `Hasher` implementations - TurboSHAKE128 and BLAKE3. As per benchmarks, both of them stand
+//! shoulder-to-shoulder - showing impressive performance, compared to SHA256 or SHA3_256.
 //!
 //! # Examples
 //!
@@ -58,6 +63,19 @@
 //!     println!("SMT root is {:?} ", tree.root());
 //! }
 //! ```
+//!
+//! ## Installation
+//!
+//! Add this to your project's `Cargo.toml`:
+//!
+//! ```toml
+//! [dependencies]
+//! fast-sparse-merkle-tree = "=0.1.0"
+//! # or (minimal, just `turboshake` for faster hashing, no_std)
+//! fast-sparse-merkle-tree = { version = "=0.1.0", default-features = false, features = ["turboshake"] }
+//! ```
+//!
+//! For more see README in `fast-sparse-merkle-tree` repository @ <https://github.com/itzmeanjan/fast-sparse-merkle-tree>.
 
 #![cfg_attr(not(feature = "std"), no_std)]
 
