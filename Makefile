@@ -2,17 +2,17 @@ default: fmt clippy test check
 
 BACKTRACE=RUST_BACKTRACE=1
 
-test:
-	$(BACKTRACE) cargo test --profile test-release --all --all-features
-
-clippy:
-	cargo clippy  --all --all-features --all-targets
-
 fmt:
 	cargo fmt --all -- --check
 
+clippy:
+	cargo clippy --workspace --all-targets --all-features -- -D warnings
+
 check:
 	cargo check --no-default-features
+
+test:
+	$(BACKTRACE) cargo test --profile test-release --all --all-features
 
 clean:
 	cargo clean
