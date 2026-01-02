@@ -18,4 +18,4 @@ clean:
 	cargo clean
 
 bench:
-	RUSTFLAGS="-C target-cpu=native" cargo bench --profile optimized --bench smt_benchmark
+	RUSTFLAGS="-C target-cpu=native" cargo bench --profile optimized --bench sparse_merkle_tree
