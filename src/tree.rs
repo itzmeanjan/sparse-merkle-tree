@@ -264,7 +264,7 @@ where
                             sibling_key.set_bit(height);
                         };
                         if !node.is_zero() {
-                            cache.entry((fork_height as usize, sibling_key)).or_insert(node);
+                            cache.entry((fork_height, sibling_key)).or_insert(node);
                         }
                         break;
                     }
