@@ -131,9 +131,9 @@ To include `fast-sparse-merkle-tree` library crate in your Rust project, add it 
 
 ```toml
 [dependencies]
-fast-sparse-merkle-tree = "=0.1.0"
+fast-sparse-merkle-tree = "=0.1.1"
 # or (minimal, just `turboshake` for faster hashing, no_std)
-fast-sparse-merkle-tree = { version = "=0.1.0", default-features = false, features = ["turboshake"] }
+fast-sparse-merkle-tree = { version = "=0.1.1", default-features = false, features = ["turboshake"] }
 ```
 
 See [smt_example.rs](./examples/sparse_merkle_tree.rs) example program which demonstrates main functionality of SMT. Run it with `$ make example`.

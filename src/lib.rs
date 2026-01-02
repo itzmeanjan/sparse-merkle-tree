@@ -70,9 +70,9 @@
 //!
 //! ```toml
 //! [dependencies]
-//! fast-sparse-merkle-tree = "=0.1.0"
+//! fast-sparse-merkle-tree = "=0.1.1"
 //! # or (minimal, just `turboshake` for faster hashing, no_std)
-//! fast-sparse-merkle-tree = { version = "=0.1.0", default-features = false, features = ["turboshake"] }
+//! fast-sparse-merkle-tree = { version = "=0.1.1", default-features = false, features = ["turboshake"] }
 //! ```
 //!
 //! For more see README in `fast-sparse-merkle-tree` repository @ <https://github.com/itzmeanjan/fast-sparse-merkle-tree>.
