@@ -2,7 +2,7 @@
 extern crate criterion;
 
 use criterion::{Criterion, Throughput};
-use nam_sparse_merkle_tree::{
+use fast_sparse_merkle_tree::{
     H256, Hash, blake3_hasher::Blake3Hasher, default_store::DefaultStore, tree::SparseMerkleTree, turboshake_hasher::TurboShake128Hasher,
 };
 use rand::Rng;
