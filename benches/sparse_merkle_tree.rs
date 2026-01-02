@@ -52,12 +52,12 @@ fn bench_smt_update(c: &mut Criterion) {
     let mut group = c.benchmark_group("smt_update");
 
     for size in NUM_LEAVES_IN_SMT.iter() {
-        group.bench_with_input(format!("blake3/{}", size), size, |b, &size| {
+        group.bench_with_input(format!("blake3/{size}"), size, |b, &size| {
             let mut rng = rand::rng();
             b.iter(|| random_blake3_smt(size, &mut rng));
         });
 
-        group.bench_with_input(format!("turboshake128/{}", size), size, |b, &size| {
+        group.bench_with_input(format!("turboshake128/{size}"), size, |b, &size| {
             let mut rng = rand::rng();
             b.iter(|| random_turboshake128_smt(size, &mut rng));
         });
@@ -70,7 +70,7 @@ fn bench_smt_get(c: &mut Criterion) {
     let mut group = c.benchmark_group("smt_get");
 
     for size in NUM_LEAVES_IN_SMT.iter() {
-        group.bench_with_input(format!("blake3/{}", size), size, |b, &size| {
+        group.bench_with_input(format!("blake3/{size}"), size, |b, &size| {
             let mut rng = rand::rng();
             let (smt, _) = random_blake3_smt(size, &mut rng);
 
@@ -80,7 +80,7 @@ fn bench_smt_get(c: &mut Criterion) {
             });
         });
 
-        group.bench_with_input(format!("turboshake128/{}", size), size, |b, &size| {
+        group.bench_with_input(format!("turboshake128/{size}"), size, |b, &size| {
             let mut rng = rand::rng();
             let (smt, _) = random_turboshake128_smt(size, &mut rng);
 
@@ -98,7 +98,7 @@ fn bench_smt_gen_merkle_proof(c: &mut Criterion) {
     let mut group = c.benchmark_group("smt_gen_merkle_proof");
 
     for size in NUM_LEAVES_IN_SMT.iter() {
-        group.bench_with_input(format!("blake3/{}", size), size, |b, &size| {
+        group.bench_with_input(format!("blake3/{size}"), size, |b, &size| {
             let mut rng = rand::rng();
 
             let (smt, mut keys) = random_blake3_smt(size, &mut rng);
@@ -108,7 +108,7 @@ fn bench_smt_gen_merkle_proof(c: &mut Criterion) {
             b.iter(|| smt.merkle_proof(keys.clone()).unwrap());
         });
 
-        group.bench_with_input(format!("turboshake128/{}", size), size, |b, &size| {
+        group.bench_with_input(format!("turboshake128/{size}"), size, |b, &size| {
             let mut rng = rand::rng();
 
             let (smt, mut keys) = random_turboshake128_smt(size, &mut rng);
@@ -126,7 +126,7 @@ fn bench_smt_verify_merkle_proof(c: &mut Criterion) {
     let mut group = c.benchmark_group("smt_verify_merkle_proof");
 
     for size in NUM_LEAVES_IN_SMT.iter() {
-        group.bench_with_input(format!("blake3/{}", size), size, |b, &size| {
+        group.bench_with_input(format!("blake3/{size}"), size, |b, &size| {
             let mut rng = rand::rng();
             let (smt, mut keys) = random_blake3_smt(size, &mut rng);
             keys.dedup();
@@ -145,7 +145,7 @@ fn bench_smt_verify_merkle_proof(c: &mut Criterion) {
             });
         });
 
-        group.bench_with_input(format!("turboshake128/{}", size), size, |b, &size| {
+        group.bench_with_input(format!("turboshake128/{size}"), size, |b, &size| {
             let mut rng = rand::rng();
             let (smt, mut keys) = random_turboshake128_smt(size, &mut rng);
             keys.dedup();
@@ -173,14 +173,14 @@ fn bench_smt_validate(c: &mut Criterion) {
 
     for size in NUM_LEAVES_IN_SMT.iter() {
         group.throughput(Throughput::Elements(*size as u64));
-        group.bench_with_input(format!("blake3/{}", size), size, |b, &size| {
+        group.bench_with_input(format!("blake3/{size}"), size, |b, &size| {
             let mut rng = rand::rng();
             let (smt, _) = random_blake3_smt(size, &mut rng);
 
             b.iter(|| assert!(smt.validate()));
         });
 
-        group.bench_with_input(format!("turboshake128/{}", size), size, |b, &size| {
+        group.bench_with_input(format!("turboshake128/{size}"), size, |b, &size| {
             let mut rng = rand::rng();
             let (smt, _) = random_turboshake128_smt(size, &mut rng);
 

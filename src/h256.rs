@@ -74,7 +74,7 @@ impl H256 {
         let mut target = H256::zero();
         let start = match range.start_bound() {
             Bound::Included(&i) => i as usize,
-            Bound::Excluded(&i) => panic!("do not allows excluded start: {}", i),
+            Bound::Excluded(&i) => panic!("do not allows excluded start: {i}"),
             Bound::Unbounded => 0,
         };
 
@@ -91,7 +91,7 @@ impl H256 {
         }
 
         if end < start {
-            panic!("end can't less than start: start {} end {}", start, end);
+            panic!("end can't less than start: start {start} end {end}");
         }
 
         let end_byte = {

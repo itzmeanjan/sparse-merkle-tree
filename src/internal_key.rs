@@ -99,7 +99,7 @@ impl<const N: usize> InternalKey<N> {
         let mut target = InternalKey::zero();
         let start = match range.start_bound() {
             Bound::Included(&i) => i,
-            Bound::Excluded(&i) => panic!("do not allows excluded start: {}", i),
+            Bound::Excluded(&i) => panic!("do not allows excluded start: {i}"),
             Bound::Unbounded => 0,
         };
 
@@ -116,7 +116,7 @@ impl<const N: usize> InternalKey<N> {
         }
 
         if end < start {
-            panic!("end can't less than start: start {} end {}", start, end);
+            panic!("end can't less than start: start {start} end {end}");
         }
 
         let end_byte = {

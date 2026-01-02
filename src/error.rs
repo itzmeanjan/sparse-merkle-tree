@@ -23,7 +23,7 @@ impl core::fmt::Display for Error {
     fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
         match self {
             Error::MissingKey(height, key) => {
-                write!(f, "Missing key at height {}, key {:?}", height, key)?;
+                write!(f, "Missing key at height {height}, key {key:?}")?;
             }
             Error::CorruptedProof => {
                 write!(f, "Corrupted proof")?;
@@ -35,10 +35,10 @@ impl core::fmt::Display for Error {
                 write!(f, "Empty keys")?;
             }
             Error::IncorrectNumberOfLeaves { expected, actual } => {
-                write!(f, "Incorrect number of leaves, expected {} actual {}", expected, actual)?;
+                write!(f, "Incorrect number of leaves, expected {expected} actual {actual}")?;
             }
             Error::Store(err_msg) => {
-                write!(f, "Backend store error: {}", err_msg)?;
+                write!(f, "Backend store error: {err_msg}")?;
             }
             Error::CorruptedStack => {
                 write!(f, "Corrupted compiled proof stack")?;
@@ -47,7 +47,7 @@ impl core::fmt::Display for Error {
                 write!(f, "Merging non-siblings in compiled stack")?;
             }
             Error::InvalidCode(code) => {
-                write!(f, "Invalid compiled proof code: {}", code)?;
+                write!(f, "Invalid compiled proof code: {code}")?;
             }
             Error::NonMergableRange => {
                 write!(f, "Ranges can not be merged")?;
