@@ -1,11 +1,11 @@
 [package]
-name = "nam-sparse-merkle-tree"
+name = "fast-sparse-merkle-tree"
 authors = ["Anjan Roy <hello@itzmeanjan.in>"]
-description = "Sparse merkle tree implementation in rust"
+description = "Fast Sparse Merkle Tree (SMT) library in Rust, using TurboSHAKE128 as default hash function"
 edition = "2024"
 resolver = "3"
 license = "MIT"
-repository = "https://github.com/itzmeanjan/sparse-merkle-tree"
+repository = "https://github.com/itzmeanjan/fast-sparse-merkle-tree"
 version = "0.1.0"
 
 [features]

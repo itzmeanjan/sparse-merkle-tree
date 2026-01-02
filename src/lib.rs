@@ -3,7 +3,7 @@
 //! # Examples
 //!
 //! ```
-//! use nam_sparse_merkle_tree::{
+//! use fast_sparse_merkle_tree::{
 //!     blake3_hasher::Blake3Hasher, default_store::DefaultStore,
 //!     error::Error, MerkleProof,
 //!     SparseMerkleTree, traits::Value, H256, Hash,
