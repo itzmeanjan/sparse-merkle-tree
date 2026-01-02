@@ -1,21 +1,22 @@
-//! Constructs a new `SparseMerkleTree<H, V, S>`.
+//! Constructs a new `SparseMerkleTree<H, V, S>`, using TurboSHAKE128 as default hash function.
 //!
 //! # Examples
 //!
 //! ```
 //! use fast_sparse_merkle_tree::{
-//!     blake3_hasher::Blake3Hasher, default_store::DefaultStore,
+//!     turboshake_hasher::TurboShake128Hasher, default_store::DefaultStore,
 //!     error::Error, MerkleProof,
 //!     SparseMerkleTree, traits::Value, H256, Hash,
 //!     traits::Hasher,
 //! };
 //!
-//! // define SMT
-//! type SMT = SparseMerkleTree<Blake3Hasher, Hash, Word, DefaultStore<Hash, Word, 32>, 32>;
+//! // Type define SMT
+//! type SMT = SparseMerkleTree<TurboShake128Hasher, Hash, Word, DefaultStore<Hash, Word, 32>, 32>;
 //!
-//! // define SMT value
+//! // Define SMT value
 //! #[derive(Default, Clone, PartialEq)]
 //! pub struct Word(String, H256);
+//!
 //! impl Value for Word {
 //!    fn as_slice(&self) -> &[u8] {
 //!        self.1.as_slice()
@@ -26,27 +27,32 @@
 //! }
 //!
 //! fn construct_smt() {
-//!     let mut tree = SMT::default();  
+//!     let mut tree = SMT::default();
+//!
 //!     for (i, word) in "The quick brown fox jumps over the lazy dog"
 //!         .split_whitespace()
 //!         .enumerate()
 //!     {
 //!         let key: Hash = {
-//!             let mut hasher = Blake3Hasher::default();
+//!             let mut hasher = TurboShake128Hasher::default();
+//!
 //!             hasher.write_bytes(&(i as u32).to_le_bytes());
 //!             hasher.finish().into()
 //!         };
 //!
 //!         let hash: H256 = if !word.is_empty() {
-//!             let mut hasher = Blake3Hasher::default();
+//!             let mut hasher = TurboShake128Hasher::default();
+//!
 //!             hasher.write_bytes(word.as_bytes());
 //!             hasher.finish().into()
 //!         } else {
 //!             H256::zero()
 //!         };
+//!
 //!         let value = Word(word.to_string(), hash);
-//!         // insert key value into tree
-//!         tree.update(key, value).expect("update");
+//!
+//!         // insert <key, value> pair into the tree
+//!         tree.update(key, value).expect("inserting into SMT must not fail");
 //!     }
 //!
 //!     println!("SMT root is {:?} ", tree.root());
