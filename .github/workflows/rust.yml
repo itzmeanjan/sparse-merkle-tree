@@ -1,15 +1,44 @@
-name: Rust
+# Taken from https://github.com/itzmeanjan/rlnc/blob/9fd095ad69ca4481e4ff009f97e2907c166b424d/.github/workflows/test_ci.yml
+name: Test Fast-SMT (Sparse Merkle Tree)
 
-on: [push, pull_request]
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+
+env:
+  CARGO_TERM_COLOR: always
 
 jobs:
   build:
+    runs-on: ${{matrix.os}}
+    strategy:
+      matrix:
+        # See https://docs.github.com/en/actions/writing-workflows/choosing-where-your-workflow-runs/choosing-the-runner-for-a-job#standard-github-hosted-runners-for-public-repositories
+        # for available targets.
+        os: [
+            ubuntu-latest, # x86-64
+            ubuntu-24.04-arm, # arm64
 
-    runs-on: ubuntu-latest
+            macos-13, # x86_64
+            macos-latest, # arm64
+
+            windows-latest, # x86_64
+            windows-11-arm, # arm64
+        ]
+        rust: [
+          1.88.0, # MSRV of this project
+          stable
+        ]
+      max-parallel: 4
 
     steps:
-    - uses: actions/checkout@v1
-    - name: Install Rust components
-      run: rustup component add rustfmt && rustup component add clippy
-    - name: Run CI checks
-      run: make
+      - uses: actions/checkout@v4
+      - uses: actions-rust-lang/setup-rust-toolchain@v1
+        with:
+          toolchain: ${{ matrix.rust }}
+          components: rustfmt, clippy
+
+      - name: Build and Test on ${{ matrix.os }} with Rust ${{ matrix.rust }}
+        run: make
