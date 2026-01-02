@@ -45,6 +45,11 @@ rand = "=0.9.2"
 name = "sparse_merkle_tree"
 harness = false
 
+[[example]]
+name = "smt_example"
+path = "examples/sparse_merkle_tree.rs"
+required-features = ["turboshake"]
+
 [profile.optimized]
 inherits = "release"
 codegen-units = 1

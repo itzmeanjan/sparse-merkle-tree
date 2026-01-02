@@ -18,7 +18,7 @@ coverage:
 	cargo tarpaulin -t 600 --profile test-release --out Html
 
 example:
-	cargo run --example smt_example --no-default-features --features "std, turboshake"
+	cargo run --example smt_example --no-default-features --features "turboshake"
 
 clean:
 	cargo clean
