@@ -19,7 +19,7 @@ categories = [
 ]
 
 [features]
-default = ["std", "turboshake", "blake3", "serde"]
+default = ["std", "turboshake", "blake3", "borsh"]
 std = []
 turboshake = ["dep:turboshake"]
 blake3 = ["dep:blake3"]

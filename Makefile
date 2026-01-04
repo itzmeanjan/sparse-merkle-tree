@@ -14,6 +14,7 @@ check:
 test:
 	$(BACKTRACE) cargo test --profile test-release
 	$(BACKTRACE) cargo test --profile test-release --all-features
+	$(BACKTRACE) cargo test --profile test-release --no-default-features --features "std, turboshake, blake3, serde"
 
 coverage:
 	cargo tarpaulin -t 600 --profile test-release --out Html
