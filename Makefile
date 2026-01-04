@@ -12,7 +12,8 @@ check:
 	cargo check --no-default-features
 
 test:
-	$(BACKTRACE) cargo test --profile test-release --all --all-features
+	$(BACKTRACE) cargo test --profile test-release
+	$(BACKTRACE) cargo test --profile test-release --all-features
 
 coverage:
 	cargo tarpaulin -t 600 --profile test-release --out Html
