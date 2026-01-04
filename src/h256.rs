@@ -1,10 +1,13 @@
 use crate::InternalKey;
 #[cfg(feature = "borsh")]
 use borsh::{BorshDeserialize, BorshSerialize};
+#[cfg(feature = "serde")]
+use serde::{Deserialize, Serialize};
 
 /// Represent 256 bits
 #[derive(Eq, PartialEq, Debug, Default, Hash, Clone, Copy, PartialOrd, Ord)]
 #[cfg_attr(feature = "borsh", derive(BorshSerialize, BorshDeserialize))]
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 pub struct H256([u8; 32]);
 
 const ZERO: H256 = H256([0u8; 32]);
@@ -129,6 +132,7 @@ impl From<H256> for [u8; 32] {
 /// A wrapper type for using a hash an internal key
 #[derive(Eq, PartialEq, Debug, Hash, Clone, Copy, PartialOrd, Ord)]
 #[cfg_attr(feature = "borsh", derive(BorshSerialize, BorshDeserialize))]
+#[cfg_attr(feature = "serde", derive(Serialize, Deserialize))]
 pub struct Hash(InternalKey<32>);
 
 impl core::ops::Deref for Hash {

@@ -1,14 +1,84 @@
+use core::fmt::Debug;
+
 #[cfg(feature = "borsh")]
 use borsh::{BorshDeserialize, BorshSerialize};
 #[cfg(feature = "borsh")]
 use core::convert::TryInto;
-use core::fmt::Debug;
 #[cfg(feature = "borsh")]
 use std::io::{Read, Write};
+
+#[cfg(feature = "serde")]
+use core::fmt;
+#[cfg(feature = "serde")]
+use serde::{Deserialize, Deserializer, Serialize, Serializer, de};
 
 /// The actual key value used in the tree
 #[derive(Eq, PartialEq, Debug, Hash, Clone, Copy, PartialOrd, Ord)]
 pub struct InternalKey<const N: usize>([u8; N]);
+
+#[cfg(feature = "serde")]
+impl<const N: usize> Serialize for InternalKey<N> {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: Serializer,
+    {
+        serializer.serialize_bytes(&self.0)
+    }
+}
+
+#[cfg(feature = "serde")]
+impl<'de, const N: usize> Deserialize<'de> for InternalKey<N> {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        struct InternalKeyVisitor<const N: usize>;
+
+        impl<'de, const N: usize> de::Visitor<'de> for InternalKeyVisitor<N> {
+            type Value = InternalKey<N>;
+
+            fn expecting(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
+                write!(formatter, "a byte array of length {}", N)
+            }
+
+            fn visit_bytes<E>(self, v: &[u8]) -> Result<Self::Value, E>
+            where
+                E: de::Error,
+            {
+                if v.len() != N {
+                    return Err(E::invalid_length(v.len(), &self));
+                }
+
+                let mut arr = [0u8; N];
+                arr.copy_from_slice(v);
+                Ok(InternalKey(arr))
+            }
+
+            // Triggered by formats like JSON which treat [u8] as a list of numbers
+            fn visit_seq<A>(self, mut seq: A) -> Result<Self::Value, A::Error>
+            where
+                A: de::SeqAccess<'de>,
+            {
+                let mut arr = [0u8; N];
+                for (i, place) in arr.iter_mut().enumerate() {
+                    match seq.next_element()? {
+                        Some(val) => *place = val,
+                        None => return Err(de::Error::invalid_length(i, &self)),
+                    }
+                }
+
+                // Ensure there are no extra elements
+                if let Ok(Some(_)) = seq.next_element::<u8>() {
+                    return Err(de::Error::invalid_length(N + 1, &self));
+                }
+
+                Ok(InternalKey(arr))
+            }
+        }
+
+        deserializer.deserialize_bytes(InternalKeyVisitor)
+    }
+}
 
 #[cfg(feature = "borsh")]
 impl<const N: usize> BorshSerialize for InternalKey<N> {
